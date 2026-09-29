@@ -2,6 +2,7 @@ name: Release
 
 # Builds an ad-hoc signed Maccy.app, publishes it as a GitHub release and
 # updates the Homebrew cask in xuzhaocheng/homebrew-tap.
+# To rename the cask, change CASK_NAME below; nothing else hardcodes it.
 #
 # Runs on every push to master (version <MARKETING_VERSION>-<run number>)
 # and can be started by hand with an explicit version.
@@ -35,7 +36,7 @@ concurrency:
 
 env:
   TAP_REPO: xuzhaocheng/homebrew-tap
-  CASK_NAME: maccy-links
+  CASK_NAME: maccy-plus
 
 jobs:
   release:
@@ -137,10 +138,11 @@ jobs:
           fi
           git clone "https://x-access-token:${TAP_TOKEN}@github.com/${TAP_REPO}.git" tap
           mkdir -p tap/Casks
-          sed -e "s/__VERSION__/$VERSION/" \
+          sed -e "s/__CASK_NAME__/$CASK_NAME/" \
+              -e "s/__VERSION__/$VERSION/" \
               -e "s/__SHA256__/$SHA256/" \
               -e "s|__REPO__|$GITHUB_REPOSITORY|g" \
-              packaging/homebrew/maccy-links.rb.template > "tap/Casks/$CASK_NAME.rb"
+              packaging/homebrew/cask.rb.template > "tap/Casks/$CASK_NAME.rb"
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
